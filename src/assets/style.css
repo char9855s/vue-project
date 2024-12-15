@@ -1,0 +1,420 @@
+*{
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+
+header{
+    height: 50px;
+    max-height: 100%;
+    min-width: 50%;
+    width: 85%;
+    max-width: 85%;
+    background-color: rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 是否换行 */
+    flex-wrap: wrap;
+    min-width: 65%;
+    max-width: 80%;
+    padding: 10px;
+}
+body{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 取出input默认样式 */
+input{
+    /* 去除边框 */
+    border: none;
+    /* 去除内外边距 */
+    padding: 0;
+    margin: 0;
+    /* 去除底色 */
+    background: none;
+    font-size: 1em;
+}
+
+
+#app{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+#display{
+    min-width: 60%;
+    max-width: 80%;
+    height: auto;
+    width: 80%;
+
+}
+
+#login-reg{
+    min-height: 100%;
+    min-width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+/* 遮罩 */
+.backgroundMash{
+    /* 优先级 */
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(1.2px);
+    display: none;
+    
+}
+
+.post{
+    display: flex;
+    width: 100%;
+    min-height: 100px;
+    flex-wrap: wrap;
+}
+
+
+.box{
+    width: 100%;
+    /* 根据内容自动撑开 */
+    /* 页面最小高度 */
+    min-height: 100px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 1px;
+    display: flex;
+    /* 不换行 */
+    flex-wrap: nowrap;
+    /* 内容中轴对齐 */
+    align-items: center;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+/* 选中之后页面放大 */
+.box:hover{
+    transform: scale(1.05);
+}
+
+.left-img{
+    /* 图片宽度150px */
+    width: 150px;
+    /* 最小高度 */
+    height: 100px;
+    /* 边距 */
+    margin: 2px;
+    display: inline-flex;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.left-img img{
+    width: 100%;
+    height: 100%;
+}
+
+/* 右侧显示内容 */
+.right-body{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    /* align-items: flex-start; */
+}
+
+/* 文字内容，上轴对齐 */
+.body-title{
+
+    /* 格式 */
+    display: flex;
+    /* flex-direction: column; */
+    /* align-self: flex-start; */
+    /* align-items: center; */
+    justify-content: center;
+
+    /* 样式 */
+    font-size: 1.5em;
+    font-weight: 700;
+
+}
+
+.body-font{
+    /* 内容显示区域 */
+    /* 内容显示区域大小固定，避免过长文本超出显示框 */
+    max-height: 46px;
+    overflow: hidden;
+    /* 首行缩进两个字符 */
+    text-indent: 2em;
+}
+
+.body-info{
+    /* flex-direction: column-reverse; */
+    /* align-self:stretch; */
+    display: flex;
+    justify-content: space-between;
+    /* 字体浅灰色 */
+    color: rgba(5, 5, 5, 0.26);
+}
+
+.header-title{
+    display: flex;
+    justify-content:space-between;
+    align-items:center;
+    width: 100%;
+    height: 100%;
+}
+
+.header-left{
+    display: flex;
+    /* 内容左侧对齐 */
+    align-items: center;
+    justify-content: start;
+    /* min-width: auto; */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+   
+}
+
+.header-srect{
+    /* 搜索区域 */
+    display: flex;
+    height: 100%;
+    /* min-width: auto; */
+    background-color: rgba(0, 0, 0, 0.2);
+    align-items: center;
+    /* justify-content: center; */
+    justify-content: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.header-srect input{
+    border: none;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 0;
+    padding: 0;
+    height: 25px;
+    flex-grow: 1;
+    /* width: 100%; */
+}
+
+.header-srect button{
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 0;
+    padding: 0;
+    border: none;
+    height: 25px;
+    width: 25px;
+}
+
+
+.header-right{
+    /* 右侧区域 */
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: end;
+    /* min-width: auto; */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+header ul{
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    height: 80%;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+header ul li{
+    list-style-type: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px rgba(0, 0, 0, 0.2) solid;
+    width: 4em;
+
+    margin-right: 5px;
+    height: 100%;
+}
+
+/* 文字跳动动画 */
+header li:hover span{
+    display: inline-block;
+    animation: jump 500ms ease-in-out;
+    animation-delay: var(--delay);
+}
+
+@keyframes jump{
+    0%,
+    100%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-10px);
+    }
+}
+
+
+
+
+.float-box{
+    /* 比遮罩高一层 */
+    display: none;
+    z-index: 2;
+    position: fixed;
+    width: 60%;
+    height: 80%;
+    /* 防止页面变形，设置最小长宽 */
+    min-width: 600px;
+    min-height: 500px;
+    /* 水平垂直居中 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: aliceblue;
+    /* overflow:scroll; */
+    /* 增加过度动画 */
+
+}
+
+
+.post-info{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.post-info-header{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    min-height: 2.5em;
+    max-height: 35px;
+}
+
+.float-box-close{
+    width: auto;
+    height: 2.5em;
+    display: flex;
+    margin-right: 2%;
+    margin-left: auto;
+    background-color: rgba(0, 0, 0, 0.0);
+    transition: 0.5s;
+}
+
+.float-box-close:hover{
+    transform: rotate(-90deg);
+}
+
+
+.post-info-body{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    /* 占满剩余区域 */
+    flex-grow: 1;
+    width: 100%;
+    height: 80%;
+    overflow: hidden auto;
+    
+}
+
+.post-info-body-title{
+    width: 100%;
+    height: 2em;
+    font: 700 1.5em "微软雅黑";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.post-info-body-font{
+    width: 85%;
+    /* 占满剩余区域 */
+    flex-grow: 1;
+    /* 首行缩进 */
+    display: flex;
+    justify-self: start;
+    text-indent: 2em;
+    margin: 5px;
+    flex-wrap: wrap;
+}
+.post-info-body-img{
+    width: 100%;
+
+}
+
+/* addpost浮动窗口 */
+.addpost{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    min-width: 50px;
+    min-height: 50px;
+    height: auto;
+    width: 8%;
+}
+
+.addpostbutton{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    min-width: 50px;
+    min-height: 50px;
+    height: auto;
+    width: 8%;
+    transition: 0.5s;
+    /* background-color: rgba(0, 0, 0, 0.2); */
+}
+
+.addpostbutton:hover{
+    transform: rotate(-90deg);
+}
+
+.addpostbutton img{
+    width: 100%;
+    height: 100%;
+}
+
+
