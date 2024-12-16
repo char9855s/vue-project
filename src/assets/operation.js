@@ -10,6 +10,8 @@
     ]
 */
 
+import axios from "axios";
+import config from "../config/constants"
 const posts = [
     {
         url : "http",
@@ -257,8 +259,6 @@ export function select(){
 
 export function bodyInfoDisplay( element ){
     const bodyinfo = element.nextElementSibling;
-    console.log(bodyinfo instanceof HTMLElement);
-    console.log(bodyinfo);
     
     
     bodyinfo.style.display = "block";
@@ -274,7 +274,7 @@ export function bodyInfoDisplayNone( element){
     const bodyinfo = element.closest(".float-box");
     bodyinfo.style.display = "none"
     // 关闭遮罩
-    MaskClosedisplay();
+    MashClosedisplay();
     // const mask = document.querySelector(".backgroundMash")
     // mask.style.display = "none" 
 }
@@ -282,7 +282,6 @@ export function bodyInfoDisplayNone( element){
 // 遮罩打开显示
 export function MashOpendisplay(){
     const mask = document.querySelector(".backgroundMash");
-    console.log(mask);
     mask.style.display = "block"
 }
 
@@ -291,3 +290,38 @@ export function MashClosedisplay(){
     const mask = document.querySelector(".backgroundMash");
     mask.style.display = "none"
 }
+
+// 
+export async function TokenValidation(){
+    // 从localStorage域获取token，验证token是否有效
+    let bearer = localStorage.getItem('Authorization')
+    // TODO 后端验证
+    // let isLogin = await //token校验;
+    try{
+        const response = await axios.get(`http://localhost:8080/vision/token`,{
+            headers:{
+                Authorization : bearer
+            },
+            timeout:8000
+        })
+        console.log(response.status);
+        
+        if ( response.status == 200){
+            const accToken = response.headers['acctoken'].replace("AccToken ", '');
+            sessionStorage.setItem('AccToken', accToken)
+            return true
+        }else{
+            // 状态码错误移除临时令牌
+            sessionStorage.setItem('AccToken', null)
+            return false
+        }
+    }catch(error){
+        // token校验失败移除保存信息
+        sessionStorage.setItem('AccToken', null)
+        localStorage.setItem('Authorization', null)
+        return false
+    }
+    
+}
+
+

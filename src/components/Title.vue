@@ -30,8 +30,8 @@
                <div class="header-right">
                     <ul>
                         <li>一键三连</li>
-                        <li>点赞</li>
-                        <li>个人信息</li>
+                        <li>退出登录</li>
+                        <li @click = "outlog">个人信息</li>
                         <li>反馈</li>
                         
                     </ul>
@@ -42,6 +42,16 @@
 <script setup>
 
 import { select } from '../assets/operation';
+
+    const emit = defineEmits(['isLoging'])
+function outlog(){
+    // 退出登录
+    // 移除两个token
+    localStorage.setItem('Authorization',null)
+    sessionStorage.setItem('AccToken',null)
+    // 通知父组件将isLogin更改为false
+    emit('isLoging', false)
+}
 
 
 </script>

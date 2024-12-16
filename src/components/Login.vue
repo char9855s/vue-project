@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <!-- 渲染登录中组件 -->
+    <!-- 渲染加载中组件 -->
      <div :class="loadMessage" v-if="isLogging">
         <Loginging />
      </div>
@@ -53,7 +53,7 @@
     <div class="errors">
         <transition-group name="fade" tag="div">
       <ErrorMessage
-        v-for="(error, index) in errors"
+        v-for="(error) in errors"
         :key="error.id"
         :message="error.message"
       />
@@ -67,6 +67,7 @@
     import ErrorMessage from './Error.vue';
     import { MashOpendisplay, MashClosedisplay } from '../assets/operation';
     import Loginging from './Loginging.vue';
+    import { requestLogin } from '../assets/request';
 
     const userm = ref('')
     const username = ref('')
@@ -83,6 +84,8 @@
     const isLogging = ref(false)
 
     const errors = ref([])
+
+    const emit = defineEmits(['isLoging'])
 
     function login_reg_switch(){
         // 当前是登录页面，切换为注册页面
@@ -112,8 +115,7 @@
             loginORregClass.value = "btn-login"
             btnFunction.value = login
 
-
-        }
+        }   
     }
 
     function reg(){
@@ -153,9 +155,8 @@
     }
 
 
-    function login(){
+    async function login(){
         // TODO 账号密码校验
-        // console.log("点击登录");
         let over = true
         if ( username.value == ''){
             triggerError("账号不能为空")
@@ -172,19 +173,20 @@
         MashOpendisplay()
         isLogging.value = true
         // 清空密码框
+        let loginpassword = passowrd.value
         passowrd.value = ''
         // 后端登录请求
-        // 设置超时时间
-        setTimeout(()=>{
-            // 关闭遮罩
-            MashClosedisplay()
-            if (isLogging.value){
-                isLogging.value = false
-                // 显示错误消息
-                triggerError("登录超时")
-            }
-        }, 8000)
+        let requestmesage = await requestLogin(username.value, loginpassword)
+        // 关闭遮罩
+        MashClosedisplay()
+        isLogging.value = false
+        if ( requestmesage != "登录成功"){
+            triggerError(requestmesage)
+            return
+        }
         
+        // 登录完成，必要字段保存 通知父组件进入index
+        emit('isLoging', true)
     }
 
     function fromVision() {

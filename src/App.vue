@@ -1,7 +1,7 @@
 <template>
 <!-- 头部 -->
   <header v-if="isLogin">
-    <Title/>
+    <Title @isLoging = "isLogin = $event"/>
   </header>
   <!-- 遮罩 -->
   <div class="backgroundMash"></div>
@@ -11,7 +11,7 @@
   </div>
     <Addpost v-if="isLogin"/>
   <main id="login-reg" v-else>
-    <Login/>
+    <Login @isLoging = "isLogin = $event"/>
   </main>
 
 
@@ -23,8 +23,13 @@
   import Login from './components/Login.vue';
   import { ref } from 'vue';
   import Addpost from './components/Addpost.vue';
-
+  import { TokenValidation } from './assets/operation';
   const isLogin = ref(false)
+  // 验证是否登录过
+  TokenValidation().then(isValid =>{
+    isLogin.value = isValid
+  })
+  
 </script>
 
 
