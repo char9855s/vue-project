@@ -65,3 +65,34 @@ export async function requestLogin(username, password) {
         return "用户名不匹配";
     }
 }
+
+export async function requestReg(userm, username, passowrd, email) {
+
+    try{
+        const response = await axios.post("http://127.0.0.1:8080/api/register",
+            {
+                'user': username,
+                'password': passowrd,
+                'username':userm,
+                'email': email == '' ? null : email
+            },
+            {
+                timeout:8000
+            }
+        )
+        let status = response.status
+        if ( status == 200){
+            return "注册成功"
+        }
+    }catch(error){
+        if (error.response){
+            if (error.response.status == 401){
+                return "账号已存在"
+            }
+            if (error.response.status == 402){
+                return "邮箱已存在"
+            }
+        }
+        return "注册失败"
+    }
+}

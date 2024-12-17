@@ -45,29 +45,17 @@
         </div>
     </div>
 
-    <!-- 渲染加载中组件 -->
-     <div :class="loadMessage" v-if="isLogging">
-        <Loginging />
-     </div>
-    <!-- 动态渲染多个 Error 组件 -->
-    <div class="errors">
-        <transition-group name="fade" tag="div">
-      <ErrorMessage
-        v-for="(error) in errors"
-        :key="error.id"
-        :message="error.message"
-      />
-    </transition-group>
-    </div>
+    
 </template>
 
 
 <script setup>
     import { ref } from 'vue';
-    import ErrorMessage from './Error.vue';
+    
     import { MashOpendisplay, MashClosedisplay } from '../assets/operation';
-    import Loginging from './Loginging.vue';
-    import { requestLogin } from '../assets/request';
+    
+    import { requestLogin, requestReg } from '../assets/request';
+import axios from 'axios';
 
     const userm = ref('')
     const username = ref('')
@@ -81,11 +69,8 @@
     const username_message = ref("请输入账号")
     const passowrd_message = ref("请输入密码")
     const title_message = ref("密码登录")
-    const isLogging = ref(false)
 
-    const errors = ref([])
-
-    const emit = defineEmits(['isLoging'])
+    const emit = defineEmits(['isLoging','error','logging', 'logging_message','tip'])
 
     function login_reg_switch(){
         // 当前是登录页面，切换为注册页面
@@ -118,7 +103,7 @@
         }   
     }
 
-    function reg(){
+    async function reg(){
         // 校验字段
         let over = true
         if ( userm.value == ''){
@@ -142,18 +127,31 @@
             return
         }
         // 显示加载
-        isLogging.value = true
+        emit('logging', true)
         // 打开遮罩
         MashOpendisplay()
         // 后端注册请求
-        // 设置超时
-        setTimeout(()=>{
-            isLogging.value = false
-            MashClosedisplay()
-            triggerError("注册超时")
-        },8000)        
+        let responsemessage = await requestReg(userm.value, username.value, passowrd.value, email.value)
+        emit('logging', false)
+        emit('logging_message','regging')
+        MashClosedisplay()
+        if ( responsemessage == "注册成功"){
+            // 弹出提示
+            triggerTip("注册成功")
+            // 清除输入框
+            userm.value = null
+            passowrd.value = null
+            requirepassowrd.value = null
+            email.value = null
+
+            // 切换回登录界面
+            login_reg_switch()
+        }else{
+            triggerError(responsemessage)
+        }
     }
 
+    
 
     async function login(){
         // TODO 账号密码校验
@@ -171,7 +169,8 @@
         }
         // 打开遮罩显示登陆中，
         MashOpendisplay()
-        isLogging.value = true
+        
+        emit('logging', true)
         // 清空密码框
         let loginpassword = passowrd.value
         passowrd.value = ''
@@ -179,25 +178,16 @@
         let requestmesage = await requestLogin(username.value, loginpassword)
         // 关闭遮罩
         MashClosedisplay()
-        isLogging.value = false
+        emit('logging',false)
+        emit('logging_message', "logging")
         if ( requestmesage != "登录成功"){
             triggerError(requestmesage)
             return
         }
+        triggerTip('登录成功')
         
         // 登录完成，必要字段保存 通知父组件进入index
         emit('isLoging', true)
-    }
-
-    function fromVision() {
-        if ( username.value == ''){
-            return "账号不能为空"
-        }
-
-        if ( passowrd.value == ''){
-            return "密码不能为空"
-        }
-        return null
     }
 
     // 触发错误时调用的函数
@@ -209,12 +199,15 @@
         };
 
         // 添加到错误列表
-        errors.value.push(error);
+        emit('error', error)
+    }
 
-        // 设置3秒后移除这个错误
-        setTimeout(() => {
-            errors.value = errors.value.filter((e) => e.id !== error.id);
-        }, 3000);
+    function triggerTip(fromTip){
+        const tip = {
+            id: Date.now(),
+            message: `${fromTip}`
+        }
+        emit('tip', tip)
     }
 
 </script>
@@ -318,7 +311,7 @@
     }
 
 
-    .errors{
+    .errors,    .completion-tips{
         /* 最上层显示 */
         z-index: 999;
         position: absolute;
@@ -328,6 +321,8 @@
         justify-content: center;
         flex-wrap: wrap;
     }
+
+
     .fade-enter-active, .fade-leave-active {
         transition: opacity 0.5s;
     }
@@ -335,7 +330,7 @@
         opacity: 0;
     }
 
-    .logging, .regging{
+    .logging, .regging ,.loading{
         z-index: 2;
         position: absolute;
         display: flex;
@@ -347,6 +342,9 @@
         border: solid 1px #BDBDBD;
         background-color: #F2F2F2;
         box-shadow: 0px 0px 5px 4px #BDBDBD;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
     }
 
     .bon-bar{

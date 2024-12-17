@@ -20,6 +20,7 @@ main{
     display: flex;
     justify-content: center;
     align-items: center;
+    align-content: flex-start;
     /* 是否换行 */
     flex-wrap: wrap;
     min-width: 65%;
@@ -30,13 +31,20 @@ body{
     height: 100vh;
     width: 100vw;
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     position: relative;
     margin: 0;
     padding: 0;
     overflow-y: auto;
     overflow-x: hidden;
+}
+footer{
+    width: 100%;
+    height: 80px;
+    /* background-color: black; */
+    margin-top: auto;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 /* 取出input默认样式 */
@@ -52,20 +60,15 @@ input{
 }
 
 
-#app{
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: flex-start;
-    align-content: flex-start;
-}
+
 
 #display{
     min-width: 60%;
     max-width: 80%;
     height: auto;
     width: 80%;
-
+    display: flex;
+    flex-wrap: wrap;
 }
 
 #login-reg{
@@ -421,4 +424,33 @@ header li:hover span{
     height: 100%;
 }
 
+.post-info-header-authorimg{
+    width: 38px;
+    height: 38px;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.post-info-header-authorimg img{
+    width: 100%;
+    height: 100%;
+
+}
+
+.post-info-body-img{
+    display: flex;
+    width: 100%;
+    max-height: 240px;
+    justify-content: flex-start;
+    align-items: center;
+}
+.post-info-body-img img{
+    width: 100px;
+    height: 100px;
+    margin: 10px 10px 10px 10px;
+}
 

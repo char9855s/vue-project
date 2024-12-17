@@ -22,7 +22,7 @@
              <!-- 搜索框 -->
               <div class="header-srect">
                 <input type="text" name="select" id="select">
-                <button type="button" @click= select>
+                <button type="button" @click= selectAll>
                     <img src="">
                 </button>
               </div> 
@@ -41,17 +41,38 @@
 
 <script setup>
 
-import { select } from '../assets/operation';
+    import { select } from '../assets/operation';
 
-    const emit = defineEmits(['isLoging'])
-function outlog(){
-    // 退出登录
-    // 移除两个token
-    localStorage.setItem('Authorization',null)
-    sessionStorage.setItem('AccToken',null)
-    // 通知父组件将isLogin更改为false
-    emit('isLoging', false)
-}
+    const emit = defineEmits(['post', 'logging_message','logging','tip','isLoging','error'])
+    async function selectAll(){
+        emit('logging_message','loading')
+        emit('logging', true)
+        const post = await select()
+        if ( post != null){
+            emit('post', post)
+            triggerTip("查询完成")
+        }else{
+            emit('error',"查询错误")
+        }
+        emit('logging',false)
+    }
+
+    function outlog(){
+        // 退出登录
+        // 移除两个token
+        localStorage.setItem('Authorization',null)
+        sessionStorage.setItem('AccToken',null)
+        // 通知父组件将isLogin更改为false
+        emit('isLoging', false)
+    }
+    function triggerTip(fromTip){
+        const tip = {
+            id: Date.now(),
+            message: `${fromTip}`
+        }
+        emit('tip', tip)
+    }
+
 
 
 </script>

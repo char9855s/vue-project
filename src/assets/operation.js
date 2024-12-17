@@ -11,7 +11,7 @@
 */
 
 import axios from "axios";
-import config from "../config/constants"
+
 const posts = [
     {
         url : "http",
@@ -52,63 +52,18 @@ const posts = [
 ]
 
 export function box(post){
-    /*
-    // 解析当前post构建为一个盒子
-    const html = 
-    `<div class="box" onclick = "bodyInfoDisplay(this)">
-            <div class="left-img">
-                <img src=${post.url} alt = "图片加载失败">
-            </div>
-            <div class="right-body">
-                <!-- 右侧显示信息 -->
-                <div class="body-title">
-                    <!-- 上部显示内容 -->
-                     <span>${post.title}</span>
-                </div>
-                <div class="body-font">
-                    <span>${post.body}</span>
-                </div>
-                
-                <div class="body-info">
-                    <!-- 下部显示信息 -->
-                    <span class = "author">${post.info.author}</span>
-                    <span class = "post-view">${post.info.pageView}</span>
-                </div>
-            </div>
-        </div>
-        <div class="float-box" style="display: none;">
-            <div class="post-info">
-                <div class="post-info-header">
-                    <div class="post-info-header-authorimg">
-                        <span>作者头像</span>
-                    </div>
-                    <div class="post-info-header-authorname">
-                        <span>${post.info.author}</span>
-                    </div>
-                    <div class="float-box-close" onclick="bodyInfoDisplayNone(this)">
-                        <span>关闭</span>
-                    </div>
-                </div>
-                <div class="post-info-body">
-                    <div class="post-info-body-title">
-                        <span>${post.title}</span>
-                    </div>
-                    <div class="post-info-body-font">
-                        <span>
-                        ${post.body}
-                        </span>
-                    </div>
-                    <div class="post-info-body-img">
-                        <span>文章图片</span>
-                    </div>
-                </div>
-            </div>
-    `
     // 使用js创建，减少html和js的耦合性
-    */
     // 创建box盒子
     const box = document.createElement('div')
     // 添加类
+    /**
+     * Pid
+     * Title
+     * body
+     * imgUrls[]
+     * label
+     * userName
+     */
     box.classList.add('box')
 
     // 左侧图片部分
@@ -116,7 +71,7 @@ export function box(post){
     leftImgDiv.classList.add('left-img');
     const bodyLeftimg = document.createElement('img')
     // TODO 后面修改为显示封面
-    bodyLeftimg.src = post.url;
+    bodyLeftimg.src = post.imgUrls.length == 0 ? "none" : post.imgUrls[0];
     bodyLeftimg.alt = "图片加载失败"
     // 添加到容器中
     leftImgDiv.appendChild(bodyLeftimg);
@@ -128,7 +83,7 @@ export function box(post){
     rightBodyDiv.classList.add('right-body');
     // 标题
     const bodyTitle = document.createElement('span')
-    bodyTitle.textContent = post.title;
+    bodyTitle.textContent = post.Title;
     rightBodyDiv.appendChild(bodyTitle);
 
     // 右侧内容
@@ -143,10 +98,10 @@ export function box(post){
     bodyInfoDiv.classList.add('body-info');
     const authorspan = document.createElement('span');
     authorspan.classList.add('author');
-    authorspan.textContent = post.info.author;
+    authorspan.textContent = post.userName == 'None'? '匿名': post.userName;
     const pageViewSpan = document.createElement('span');
     pageViewSpan.classList.add('post-view');
-    pageViewSpan.textContent = post.info.pageView;
+    pageViewSpan.textContent = post.updateTime.slice(0,16).replace('T',' ');
     bodyInfoDiv.appendChild(authorspan);
     bodyInfoDiv.appendChild(pageViewSpan);
 
@@ -178,13 +133,14 @@ export function box(post){
 
     const authorImgDiv = document.createElement('div');
     authorImgDiv.classList.add('post-info-header-authorimg');
-    const authorSpan = document.createElement('span');
-    authorSpan.textContent = "作者头像";
-    authorImgDiv.appendChild(authorSpan);
+    const authorImg = document.createElement('img');
+    // TODO 头像图片
+    authorImg.src = "##";
+    authorImgDiv.appendChild(authorImg);
     const authorNameDiv = document.createElement('div');
     authorNameDiv.classList.add('post-info-header-authorname');
     const authorNameSpan = document.createElement('span');
-    authorNameSpan.textContent = post.info.author;
+    authorNameSpan.textContent = post.userName == 'None'? '匿名': post.userName;
     authorNameDiv.appendChild(authorNameSpan);
 
     // 关闭按钮
@@ -211,7 +167,7 @@ export function box(post){
     const bodyTitleDivFloat = document.createElement('div');
     bodyTitleDivFloat.classList.add('post-info-body-title');
     const titleSpanFloat = document.createElement('span');
-    titleSpanFloat.textContent = post.title;
+    titleSpanFloat.textContent = post.Title;
     bodyTitleDivFloat.appendChild(titleSpanFloat);
     const bodyFontDivFloat = document.createElement('div');
     bodyFontDivFloat.classList.add('post-info-body-font');
@@ -220,9 +176,14 @@ export function box(post){
     bodyFontDivFloat.appendChild(bodySpanFloat);
     const bodyImgDivFloat = document.createElement('div');
     bodyImgDivFloat.classList.add('post-info-body-img');
-    const imgSpan = document.createElement('span');
-    imgSpan.textContent = "文章图片";
-    bodyImgDivFloat.appendChild(imgSpan);
+    // 遍历添加图片
+    if ( post.imgUrls.length != 0){
+        post.imgUrls.forEach((imgurl) => {
+            const img = document.createElement('img');
+            img.src = `${imgurl}`;
+            bodyImgDivFloat.appendChild(img);
+        })
+    }
 
     // 组装详细内容
     postInfoBodyDiv.appendChild(bodyTitleDivFloat);
@@ -245,15 +206,60 @@ export function box(post){
 }
 
 
-export function select(){
+export async function select(){
     
     const display = document.getElementById("display")
-    
+    // 打开遮罩
+    MashOpendisplay()
+
     display.innerHTML = "" // 清空原先内容
-    posts.forEach((post) =>{
-        display.appendChild(box(post))
-    })
+    try{
+        const body = await selectPostAll()
+        
+        if ( body != null){
+            let posts = body.posts
+            posts.forEach((post) =>{
+                display.appendChild(box(post))
+            })
+            return body
+        }else{
+            return null
+        }
+    }catch(error){
+        return null
+    }finally{
+        MashClosedisplay()
+    }
+    
 }
+
+export async function selectPage(page){
+    const display = document.getElementById("display")
+    // 打开遮罩
+    MashOpendisplay()
+
+    display.innerHTML = "" // 清空原先内容
+    try{
+        const response = await selectPostPage(page)
+        if ( response != null){
+            // 渲染页面
+            response.posts.forEach(post => {  
+                display.appendChild(box(post))
+            });
+            
+            return  {
+                    "index":response.pageNum,
+                    "pages":response.totalPages
+                }
+        }else{
+            return null
+        }
+    }catch(error){        
+        return null
+    }
+}
+    
+
 
 // 显示详细页面函数
 
@@ -304,7 +310,6 @@ export async function TokenValidation(){
             },
             timeout:8000
         })
-        console.log(response.status);
         
         if ( response.status == 200){
             const accToken = response.headers['acctoken'].replace("AccToken ", '');
@@ -323,5 +328,41 @@ export async function TokenValidation(){
     }
     
 }
+
+// 查询全部帖子信息
+export async function selectPostAll(){
+    // 一次查询四个帖子
+    try{
+        const selectposts = await axios.get(`http://127.0.0.1:8080/operation/selectPost?pageSize=4`)
+        if( selectposts.status == 200){
+            // 返回post
+            return selectposts.data
+        }else{
+            // 错误信息
+        }
+    }catch(error){
+        // 错误信息
+    }
+}
+
+// 查询指定页码帖子信息
+export async function selectPostPage( number){
+    // 一次查询四个帖子
+    try{
+        const posts = await axios.get(`http://127.0.0.1:8080/operation/selectPost?pageNum=${number}&pageSize=4`)
+        if( posts.status == 200){
+            // 返回post
+            return posts.data
+        }else{
+            return null
+            // 错误信息
+        }
+    }catch(error){        
+        return null
+        // 错误信息
+    }
+}
+
+
 
 

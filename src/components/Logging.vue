@@ -18,15 +18,18 @@
 </template>
 
 <script setup>
+
+    const props = defineProps(['logging_message'])
     
 </script>
 
 <style>
     
-    .logging span, .regging span{
+    .logging span, .regging span, .loading span{
         color: #333333;
         margin-left: 10px;
         font-weight: 500;
+        
     }
     svg{
         animation: logging-svg-spin 2s linear infinite;
@@ -55,6 +58,9 @@
 }
 .regging span::before{
     content: "注册中";
+}
+.loading span::before{
+    content: "加载中";
 }
 
 </style>
