@@ -13,8 +13,11 @@
   <!--  -->
   <div id="display" v-if="isLogin">
     <Display/>
+    <Display/>
+    <Display/>
+    <Display/>
   </div>
-    <Addpost v-if="isLogin"/>
+    <Addpost v-if="isLogin" @status = 'handlstatus' />
     <!-- 底部中间显示页码 -->
   
   <main id="login-reg" v-else>
@@ -55,7 +58,6 @@
 
 <script setup>
   import Title from './components/Title.vue';
-  import Display from './components/Display.vue';
   import Login from './components/Login.vue';
   import { ref } from 'vue';
   import Addpost from './components/Addpost.vue';
@@ -64,7 +66,7 @@
   import Logging from './components/Logging.vue';
   import CompletionTips from './components/CompletionTips.vue';
   import PostsNumber from './components/PostsNumber.vue';
-
+  import Display from './components/Display.vue';
   const logging = ref(false)
   const isLogin = ref(false)
   const logging_message = ref('logging')
